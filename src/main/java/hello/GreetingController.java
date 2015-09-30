@@ -30,7 +30,7 @@ public class GreetingController {
                             String.format(template, name));
 	}
 	
-	// This should not be get, should be push
+	//! This should not be get, should be push
     @RequestMapping("/contact")
     public Contact contact(@RequestParam(value="cid", defaultValue="0") long cid) {
     	Contact c1 = new Contact(cid);
@@ -52,9 +52,23 @@ public class GreetingController {
     }
     
     @RequestMapping("/contacts")
-	Collection<Contact> getContact(@RequestParam (value="targetCID", defaultValue="0")String targetCID) {
+	Collection<Contact> getContact(@RequestParam (value="targetCID", defaultValue="0")long targetCID) {
+    	Collection<Contact> tmp = new ArrayList<Contact>();
 		
-    	return contacts;
+    	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
+    	{
+    		Contact item = i.next();
+    		if(item.getCId() == targetCID)
+    		{
+    			// Check out container wrapper later...
+    			tmp.add(item);
+    			return tmp;
+			}
+    	}
+    	// There is a bug, input 0 as cid is invalid, cause it will return all the contacts...
+    	if(targetCID == 0L)
+    		return contacts;
+    	return tmp;
 	}
 //    @RequestMapping(method = RequestMethod.GET)
 //   	Collection<Contact> getContact(@RequestParam (value="cid", defaultValue="0")String cid) {
