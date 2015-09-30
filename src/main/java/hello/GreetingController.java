@@ -29,32 +29,30 @@ public class GreetingController {
         return new Greeting(counter.incrementAndGet(),
                             String.format(template, name));
 	}
-	
-	
     
     //! This should not be get, should be push
-    @RequestMapping(method = RequestMethod.POST )
-    public Contact createContact(@RequestParam(value="cid", defaultValue="0") long cid) {
-    	Contact c1 = new Contact(cid);
-    	// Iterate contacts list and if cid exist, delete the old one and update the new one
-    	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
-    	{
-    		Contact item = i.next();
-    		if(item.getCId() == cid)
-    		{
-    			//! I remember I can't change object inside iterator, need review on this part
-    			contacts.remove(item);
-    			contacts.add(c1);
-    			return c1;
-    		}
-    	}
-    	// If not exist, add it to the contacts list
-    	contacts.add(c1);
-    	return  c1;
-    }
+//    @RequestMapping(method = RequestMethod.POST)
+//    public Contact createContact((value="cid", defaultValue="0") long cid) {
+//    	Contact c1 = new Contact(cid);
+////    	// Iterate contacts list and if cid exist, delete the old one and update the new one
+////    	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
+////    	{
+////    		Contact item = i.next();
+////    		if(item.getCId() == cid)
+////    		{
+////    			//! I remember I can't change object inside iterator, need review on this part
+////    			contacts.remove(item);
+////    			contacts.add(c1);
+////    			return c1;
+////    		}
+////    	}
+//    	// If not exist, add it to the contacts list
+//    	contacts.add(c1);
+//    	return  c1;
+//    }
   
-    @RequestMapping(method = RequestMethod.PUT , value = "/contacts")
-    public Contact updateContact(@RequestParam(value="cid", defaultValue="0") long cid) {
+    @RequestMapping(method = RequestMethod.PUT , value = "/contacts/{cid}")
+    public Contact updateContact(@PathVariable long cid) {
     	Contact c1 = new Contact(cid);
     	// Iterate contacts list and if cid exist, delete the old one and update the new one
     	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
@@ -73,8 +71,8 @@ public class GreetingController {
     	return  c1;
     }
     
-    @RequestMapping(method = RequestMethod.GET, value = "/contacts")
-	Collection<Contact> getContact(@RequestParam (value="targetCID", defaultValue="0")long targetCID) {
+    @RequestMapping(method = RequestMethod.GET, value = "/contacts/{targetCID}")
+	Collection<Contact> getContact(@PathVariable long targetCID) {
     	Collection<Contact> tmp = new ArrayList<Contact>();
 		
     	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
@@ -87,15 +85,18 @@ public class GreetingController {
     			return tmp;
 			}
     	}
-    	// There is a bug, input 0 as cid is invalid, cause it will return all the contacts...
-    	if(targetCID == 0L)
-    		return contacts;
-    	return tmp;
+    	
+    	return contacts;
 	}
+    @RequestMapping(method = RequestMethod.GET, value = "/contacts")
+   	Collection<Contact> getContact() {
+       	       	
+       	return contacts;
+   	}
     
   //! This should not be get, should be push
-    @RequestMapping(method = RequestMethod.DELETE ,value = "/contact")
-    public Collection<Contact> deleteContact(@RequestParam(value="cid", defaultValue="0") long cid) {
+    @RequestMapping(method = RequestMethod.DELETE ,value = "/contact/{cid}")
+    public String deleteContact(@PathVariable long cid) {
     	// Iterate contacts list and if cid exist, delete the old one and update the new one
     	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
     	{
@@ -105,10 +106,10 @@ public class GreetingController {
     			//! I remember I can't change object inside iterator, need review on this part
     			contacts.remove(item);
     			// Need to print out a message that this object is removed, but since this is REST, I should wrap the message to the object return and right not I am not familiar with how to use wrapper yet. 
-    			return contacts;
+    			return "Item "+cid+" is deleted";
     		}
     	}
-    	return contacts;
+    	return "Can't find Item "+cid;
     }
 //    @RequestMapping(method = RequestMethod.GET)
 //   	Collection<Contact> getContact(@RequestParam (value="cid", defaultValue="0")String cid) {
