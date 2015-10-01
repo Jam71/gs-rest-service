@@ -35,7 +35,7 @@ public class GreetingController {
                             String.format(template, name));
 	}
 	
-	 @RequestMapping(method = RequestMethod.POST, value="/contacts" )
+	 @RequestMapping(method = RequestMethod.POST)
 	    public Contact createContact(@RequestBody Contact c1) {
 	    	contacts.add(c1);
 	    	return  c1;
@@ -62,30 +62,33 @@ public class GreetingController {
     }
     
     @RequestMapping(method = RequestMethod.GET, value = "/contacts")
-	Collection<Contact> getContact(@RequestParam (value="targetCID", defaultValue="0")long targetCID) {
+   	Collection<Contact> getContactID() {
+       	
+       		return contacts;
+       	
+   	}
+    
+    @RequestMapping(method = RequestMethod.GET, value = "/contacts/{cid}")
+	Collection<Contact> getContact(@PathVariable long cid) {
     	Collection<Contact> tmp = new ArrayList<Contact>();
 		
     	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
     	{
     		Contact item = i.next();
-    		if(item.getCId() == targetCID)
+    		if(item.getCId() == cid)
     		{
     			// Check out container wrapper later...
     			tmp.add(item);
     			return tmp;
 			}
     	}
-    	//Contact Object1 = new Contact(3,"John","Smiths",123,"xxx@gmail.com");
-    	//contacts.add(Object1);
-    	// There is a bug, input 0 as cid is invalid, cause it will return all the contacts...
-    	if(targetCID == 0L)
-    		return contacts;
+
     	return tmp;
 	}
     
   //! This should not be get, should be push
-    @RequestMapping(method = RequestMethod.DELETE ,value = "/contact")
-    public Collection<Contact> deleteContact(@RequestParam(value="cid", defaultValue="0") long cid) {
+    @RequestMapping(method = RequestMethod.DELETE ,value = "/contact/{cid}")
+    public Collection<Contact> deleteContact(@PathVariable long cid) {
     	// Iterate contacts list and if cid exist, delete the old one and update the new one
     	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
     	{
