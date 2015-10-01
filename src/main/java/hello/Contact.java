@@ -6,6 +6,7 @@ import java.util.Map;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Contact {
 
@@ -14,8 +15,9 @@ public class Contact {
 	private final String lastName;
 	private final long phone;
 	private final String email;
-
-	public Contact(long cid, String firstName, String lastName, long phone, String email)
+	
+	@JsonCreator
+	public Contact(@JsonProperty("cid") long cid, @JsonProperty("firstName")String firstName, @JsonProperty("lastName")String lastName, @JsonProperty("phone")long phone, @JsonProperty("email")String email)
 	{
 		this.cid = cid;
 		this.firstName = firstName;
@@ -23,6 +25,9 @@ public class Contact {
 		this.phone = phone;
 		this.email = email;
 	}
+	
+	// This syntax is great, but casting part is not good and not necessary. 
+//	@JsonCreator
 //    public Contact(Map<String, Object> props) {
 //        this.cid = (long) props.get("cid");
 //        this.firstName = (String) props.get("firstName");

@@ -3,12 +3,14 @@ package hello;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,26 +35,14 @@ public class GreetingController {
                             String.format(template, name));
 	}
 	
-	
-    
-    //! This should not be get, should be push
-   
-    @RequestMapping(method = RequestMethod.POST, value="/contacts" )
-    @JsonCreator
-    public Contact createContact(Object argument) {
-    	Map<String, Object> props = (Map<String, Object>) argument;
-    	Contact c1 = new Contact((long) props.get("cid"),
-    			(String) props.get("firstName"),
-    			(String) props.get("lastName"),
-    			(long) props.get("phone"),
-    			(String) props.get("email"));
-
-    	contacts.add(c1);
-    	return  c1;
-    }
-  
+	 @RequestMapping(method = RequestMethod.POST, value="/contacts" )
+	    public Contact createContact(@RequestBody Contact c1) {
+	    	contacts.add(c1);
+	    	return  c1;
+	    }
+	 
     @RequestMapping(method = RequestMethod.PUT , value = "/contacts/{cid}")
-    public Contact updateContact(@PathVariable long cid, Contact contactObj) {
+    public Contact updateContact(@PathVariable long cid, @RequestBody Contact contactObj) {
     	// Contact c1 = new Contact(cid);
     	// Iterate contacts list and if cid exist, delete the old one and update the new one
     	for(Iterator<Contact> i = contacts.iterator(); i.hasNext(); )
