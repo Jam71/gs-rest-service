@@ -1,0 +1,4 @@
+<dataset>
+    <Contact cid="1" firstName="John" lastName="Smith" phone=8010004444 email="xxx@gmail.com"  />
+    <Contact cid="2" firstName="Josn" lastName="Smieh" phone=8010014444 email="xss@gmail.com"  />
+</dataset>
